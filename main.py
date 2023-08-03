@@ -1,3 +1,4 @@
+from enum import Enum
 from typing import Union
 from fastapi import FastAPI
 
@@ -8,7 +9,9 @@ from pydantic import BaseModel
 app = FastAPI()
 
 class Item(BaseModel):
+    # has required attribute name that should be a str
     name: str
+    # has required attribute price that should be a int
     price: int
     # default value is null object = None
     # what is diffirent between null and None?
@@ -36,3 +39,21 @@ def update_item(item_id:int,item:Item):
     # checks to the contents of the object
     # print(vars(item))
     return {"item_name": item.name, 'item_id': item_id, 'price': item.price}
+
+class SoccerPlayerName(str,Enum):
+    Messi = "Messi"
+    Ronaldo = "Ronaldo"
+
+class Player(BaseModel):
+    name: str
+    country: str
+
+# is演算子の方が処理が早いらしい
+@app.get("/players/{player_name}") 
+def get_Player(player_name: SoccerPlayerName)-> Player:
+    if player_name is SoccerPlayerName.Messi:
+        return { "name": "Lionel Andrés Messi", "country": "Argentina" }
+    if player_name == SoccerPlayerName.Ronaldo:
+        return { "name": "Cristiano Ronaldo","country": "Portugal" }
+    
+    return { "name": "none","country": "none" }
