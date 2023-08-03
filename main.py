@@ -57,3 +57,9 @@ def get_Player(player_name: SoccerPlayerName)-> Player:
         return { "name": "Cristiano Ronaldo","country": "Portugal" }
     
     return { "name": "none","country": "none" }
+
+fake_item_db = [{"item_name":"Foo"},{"item_name":"Fizz"},{"item_name":"Bazz"}]
+
+@app.get("/items")
+def read_items(skip: int = 0 , limit: int = 10):
+    return fake_item_db[skip: skip + 10]
