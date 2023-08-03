@@ -1,6 +1,21 @@
+from typing import Union
 from fastapi import FastAPI
 
+# what is pydantic
+from pydantic import BaseModel
+
+# execute to create Instans
 app = FastAPI()
+
+class Item(BaseModel):
+    name: str
+    price: int
+    # default value is null object = None
+    # what is diffirent between null and None?
+    # it means is_offer is optional value 
+    # nullの意味合いでレスポンスを返した時にフロントではnullではなくundefinedが渡ってくるため、認識齟齬の問題がある
+    is_offer: Union[bool, None] = None
+
 
 
 @app.get("/")
@@ -10,4 +25,14 @@ def read_root():
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: str = None):
+    # check to the type of item_id
+    # pathパラメーターがintで渡ってくるのが謎、必ずstrだと思っていたのに
+    # conversionしてるのかも
+    # print({'item_id': type(item_id)})
     return {"item_id": item_id, "q": q}
+
+@app.put("/items/{item_id}")
+def update_item(item_id:int,item:Item):
+    # checks to the contents of the object
+    # print(vars(item))
+    return {"item_name": item.name, 'item_id': item_id, 'price': item.price}
